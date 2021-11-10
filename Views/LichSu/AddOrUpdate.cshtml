@@ -1,0 +1,64 @@
+﻿@model QuanLyThongTinTuyenTruyen.Models.LichSu
+@{
+    Layout = null;
+}
+<div class="modal-content">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box" style="padding:10px 10px">
+                <h4 class="page-title">Thông tin lịch sử</h4>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    @using (@Html.BeginForm("AddOrUpdate", "LichSu", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        @Html.HiddenFor(model => model.LichSuId)
+                        @Html.HiddenFor(model => model.ThongTinId)
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label" style="display: flex; flex-direction: column">Ngày phát</label>
+                                    @Html.EditorFor(model => model.NgayPhat, new { htmlAttributes = new { @id = "flatpickr01", @class = "form-control", style = "width: 100%" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label" style="display: flex; flex-direction: column">Số lần phát</label>
+                                    @Html.EditorFor(model => model.SoLanPhat, new { htmlAttributes = new { @class = "form-control", style = "width: 100%" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label">Trạng thái<span class="text-danger">*</span></label>
+                                    @Html.DropDownListFor(model => model.TrangThai, (SelectList)ViewBag.TrangThai, new { @id = "TrangThai", @class = "form-control " })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group text-right mb-0">
+                            <button class="btn btn-primary" type="submit">Lưu</button>
+                            <button type="button" data-dismiss="modal" class="btn btn-secondary">Đóng</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        $("document").ready(function () {
+        $('#TrangThai').val('@Model.TrangThai');
+    });
+    flatpickr("#flatpickr01", {
+        dateFormat: "m/d/Y",
+    })
+</script>

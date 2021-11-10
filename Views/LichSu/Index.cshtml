@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<header class="page-title-bar">
+    <div class="d-md-flex align-items-md-start">
+        <h1 class="page-title mr-sm-auto"> Quản lý lịch sử của @ViewBag.Ten </h1>
+        <div class="btn-toolbar">
+            <button type="button" class="btn btn-light" onclick="Popup('@Url.Action("AddOrUpdate","LichSu", new { ThongTinId = ViewBag.ThongTinId})')"><i class="oi oi-plus"></i> <span class="ml-1">Thêm</span></button>
+            <button type="button" class="btn btn-light" onclick="window.location.href='/Home'"><i class="fas fa-arrow-left"></i> <span class="ml-1">Trở về</span></button>
+        </div>
+    </div>
+</header>
+<div class="page-section">
+    <div class="card card-fluid">
+        <div class="card-body">
+            <div class="form-group">
+                @*<div class="input-group input-group-alt">
+                        <div class="input-group-prepend">
+                            <select id="trangthai" class="custom-select">
+                                <option selected value="-1"> Trạng thái </option>
+                                <option value="1"> Đã giao </option>
+                                <option value="0"> Nền trống </option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><span class="oi oi-magnifying-glass"></span></span>
+                            </div>
+                            <input id="tennen" type="text" class="form-control" placeholder="Tên nền">
+                        </div>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><span class="oi oi-magnifying-glass"></span></span>
+                            </div>
+                            <input id="tennguoimua" type="text" class="form-control" placeholder="Tên người mua">
+                        </div>
+                        <button onclick="SubmitSearch()" class="btn btn-primary">Tìm kiếm</button>
+                    </div>*@
+            </div>
+            <div class="table-responsive" id="tableAjax">
+                @{
+                    Html.RenderAction("LoadTable", "LichSu", new { Id = ViewBag.ThongTinId });
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="clientContactEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" id="modalcontent">
+    </div>
+</div>
+<script>
+    function SubmitForm(form) {
+        post_url = $(form).attr("action");
+        $.ajax({
+        type: "POST",
+        url: post_url,
+        data: $(form).serialize(),
+        success: function (data) {
+            if (data.success) {
+                $('#exampleModal').modal('toggle');
+                $("#tableAjax").load("@Url.Action("LoadTable", "LichSu", new { Id = ViewBag.ThongTinId })");
+            } else {
+                $('#exampleModal').modal('toggle');
+                $("#tableAjax").load("@Url.Action("LoadTable", "LichSu", new { Id = ViewBag.ThongTinId })");
+                }
+            }
+        });
+        return false;
+    }
+    function SubmitSearch() {
+        $.ajax({
+            type: "Get",
+            url: "/LichSu/LoadTable",
+            contentType: "html",
+            success: function (response) {
+                $('#tableAjax').html(response);
+            }
+        });
+        return false;
+    }
+    function Popup(urlMem) {
+        var url = urlMem;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (response) {
+                $('#modalcontent').html(response);
+                $("#exampleModal").modal("show");
+            },
+            error: function (xhr, status) {
+                alert(status);
+            }
+        });
+    }
+    function Delete(url) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                if (data.success) {
+                   $("#tableAjax").load("@Url.Action("LoadTable", "LichSu", new { Id = ViewBag.ThongTinId })");
+                } else {
+                   $("#tableAjax").load("@Url.Action("LoadTable", "LichSu", new { Id = ViewBag.ThongTinId })");
+                }
+            }
+        });
+    }
+</script>

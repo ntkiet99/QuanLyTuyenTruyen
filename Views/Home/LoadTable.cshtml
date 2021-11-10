@@ -1,0 +1,65 @@
+﻿@model List<QuanLyThongTinTuyenTruyen.Models.ThongTin>
+@using QuanLyThongTinTuyenTruyen.Models;
+@{
+    Layout = null;
+    int index = 1;
+
+    var TrangThai = new List<TrangThai> {
+                new TrangThai(1,"Khởi tạo"),
+                new TrangThai(2,"Đã duyệt"),
+                new TrangThai(3,"Đã khóa")
+            };
+    TrangThai FindTrangTrai(int id = 0){
+        return TrangThai.Where(x => x.Id == id).FirstOrDefault();
+    }
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th> Tiêu đề </th>
+            <th> Mô tả </th>
+            <th> Ngày bắt đầu </th>
+            <th> Ngày hết hạn </th>
+            <th> Tên đơn vị sử dụng</th>
+            <th> Trạng thái </th>
+            <th style="width:200px; min-width:100px;"> &nbsp; </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@index</td>
+                <td>@item.Ten</td>
+                <td>@item.MoTa</td>
+                <td>@item.NgayBatDau.ToShortDateString()</td>
+                <td>@item.NgayHetHan.ToShortDateString()</td>
+                <td>@item.TenDonViSuDung</td>
+                <td>@FindTrangTrai(item.TrangThai).Name</td>
+                <td class="align-middle text-right">
+                    @{
+                        var uEdit = Url.Action("AddOrUpdate", "Home") + "/" + item.ThongTinId;
+                        var urlEdit = @"Popup('" + uEdit + "')";
+                        var uDelete = Url.Action("Delete", "Home") + "/" + item.ThongTinId;
+                        var urluDelete = @"Delete('" + uDelete + "')";
+                        var uPublish = Url.Action("GetPublish", "Home") + "/" + item.ThongTinId;
+                        var urluPublish = @"Popup('" + uPublish + "')";
+                        var uLichSu = Url.Action("LichSu", "Home") + "/" + item.ThongTinId;
+                        var urluLichSu = @"Popup('" + uLichSu + "')";
+                        index++;
+                    }
+
+                    @if (item.TrangThai != 2)
+                    {
+                        <a href="#" onclick="@urluPublish" class="btn btn-sm btn-icon btn-secondary"><i class="far fa-check-square"></i><span class="sr-only">Sửa</span></a>
+                    }
+
+                    <a href="/LichSu/Index/@item.ThongTinId" class="btn btn-sm btn-icon btn-secondary"><i class="fas fa-history"></i><span class="sr-only">Sửa</span></a>
+                    <a href="#" onclick="@urlEdit" class="btn btn-sm btn-icon btn-secondary"><i class="fa fa-pencil-alt"></i> <span class="sr-only">Sửa</span></a>
+                    <a href="#" onclick="@urluDelete" class="btn btn-sm btn-icon btn-secondary"><i class="far fa-trash-alt"></i> <span class="sr-only">Xóa</span></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
